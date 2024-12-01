@@ -7,17 +7,17 @@ window.onload = async function () {
     // Configuración de la cámara
     async function setupCamera() {
         try {
-            // Acceder a la cámara del usuario
+            // Intentamos acceder a la cámara
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: true
             });
 
-            // Verificamos si obtuvimos el stream
+            // Verificamos si obtenemos el stream correctamente
             if (!stream) {
                 throw new Error("No se pudo acceder al stream de la cámara.");
             }
 
-            // Enlazamos el video con la cámara
+            // Enlazamos el stream con el elemento de video
             video.srcObject = stream;
             video.play();
 
@@ -29,11 +29,11 @@ window.onload = async function () {
                 detectMovement();
             };
         } catch (err) {
-            console.error("Error al acceder a la cámara:", err);
+            console.error("Error al intentar acceder a la cámara:", err);
             if (err.name === "NotReadableError") {
                 status.textContent = "La cámara no está disponible o está en uso por otro programa.";
             } else if (err.name === "NotAllowedError") {
-                status.textContent = "Permiso denegado para acceder a la cámara.";
+                status.textContent = "Permiso denegado para acceder a la cámara. Verifica los permisos del navegador.";
             } else {
                 status.textContent = "Error al inicializar la cámara: " + err.message;
             }
@@ -43,7 +43,7 @@ window.onload = async function () {
     // Función para detectar movimiento
     async function detectMovement() {
         try {
-            // Cargamos el modelo de BodyPix
+            // Cargamos el modelo BodyPix
             const net = await bodyPix.load();
 
             // Realizamos la segmentación del cuerpo en el video
@@ -53,11 +53,11 @@ window.onload = async function () {
             context.clearRect(0, 0, canvas.width, canvas.height);
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Dibujar la máscara de la persona detectada
+            // Dibujamos la máscara de la persona detectada
             const mask = segmentation.personMask;
             context.putImageData(mask, 0, 0);
 
-            // Vuelve a detectar movimiento cada 100ms
+            // Continuamos detectando movimiento cada 100ms
             setTimeout(detectMovement, 100);
 
         } catch (err) {
@@ -66,6 +66,6 @@ window.onload = async function () {
         }
     }
 
-    // Inicializar la cámara
+    // Inicializamos la cámara
     setupCamera();
 };
