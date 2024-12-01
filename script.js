@@ -12,11 +12,6 @@ window.onload = async function () {
                 video: true
             });
 
-            // Verificamos si obtenemos el stream correctamente
-            if (!stream) {
-                throw new Error("No se pudo acceder al stream de la cámara.");
-            }
-
             // Enlazamos el stream con el elemento de video
             video.srcObject = stream;
             video.play();
