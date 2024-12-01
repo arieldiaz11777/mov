@@ -30,7 +30,13 @@ window.onload = async function () {
             };
         } catch (err) {
             console.error("Error al acceder a la cámara:", err);
-            status.textContent = "No se pudo acceder a la cámara: " + err.message;
+            if (err.name === "NotReadableError") {
+                status.textContent = "La cámara no está disponible o está en uso por otro programa.";
+            } else if (err.name === "NotAllowedError") {
+                status.textContent = "Permiso denegado para acceder a la cámara.";
+            } else {
+                status.textContent = "Error al inicializar la cámara: " + err.message;
+            }
         }
     }
 
